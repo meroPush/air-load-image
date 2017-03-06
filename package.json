@@ -1,0 +1,47 @@
+{
+  "name": "air-load-image",
+  "version": "1.0.0",
+  "description": "Lazy loading of images and the background when scrolling",
+  "main": "dist/air-load-image.js",
+  "keywords": [
+    "javascript",
+    "lazy-loading"
+  ],
+  "author": {
+    "name": "mero.push",
+    "email": "mero.push@gmail.com",
+    "url": ""
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meroPush/air-load-image.git"
+  },
+  "bugs": {
+    "url": "https://github.com/meroPush/air-load-image/issues"
+  },
+  "homepage": "https://github.com/meroPush/air-load-image",
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.18.8",
+    "del": "^2.2.2",
+    "eslint": "^3.16.1",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-cached": "^1.1.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-inject-string": "^1.1.0",
+    "gulp-minify": "0.0.15",
+    "gulp-notify": "^3.0.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-uglify": "^2.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "config": {
+    "title": "Air load image",
+    "filename": "air-load-image"
+  }
+}

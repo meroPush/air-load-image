@@ -1,0 +1,13 @@
+@charset "UTF-8";
+.air-load-background {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  padding-top: 100px;
+  background: 50% 50% no-repeat;
+  background-size: cover;
+  text-align: center;
+}
+.air-load-background h1 {
+  font-weight: 600;
+}
