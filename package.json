@@ -1,16 +1,20 @@
 {
   "name": "air-load-image",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Lazy loading of images and the background when scrolling",
   "main": "dist/air-load-image.js",
   "keywords": [
     "javascript",
-    "lazy-loading"
+    "lazy-loading",
+    "lazy load",
+    "jQuery",
+    "jquery plugin",
+    "jquery lazy load"
   ],
   "author": {
     "name": "mero.push",
     "email": "mero.push@gmail.com",
-    "url": ""
+    "url": "https://github.com/meroPush"
   },
   "license": "MIT",
   "repository": {

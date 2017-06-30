@@ -1,71 +1,63 @@
-(function ($) {
-    function AirLoadImage(options) {
-        var defaults = {
-            items: '._air-load-image',
-            pluginId: 'airLoadImage',
-            extended: '75%',
-            timeThrottle: 750
+(function ($, window, document) {
+    var pluginName = 'airLoadImage',
+        defaults = {
+            offset: '75%',
+            delay: 750,
+            pluginId: 'airLoadImage'
         };
-        this._defaults = defaults;
-        this.options = $.extend({}, defaults, options);
-        this.extended = 0;
+
+    function AirLoadImage(elements, options) {
+        this.elements = elements;
+        this.offset = 0;
         this.windowHeight = 0;
+        this.options = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
         this.init();
     }
-    window.AirLoadImage = AirLoadImage;
-    AirLoadImage.prototype.getExtended = function () {
-        var extended;
-        if (typeof this.options.extended === 'string') {
-            extended = parseFloat(this.options.extended) * this.windowHeight / 100;
+    AirLoadImage.prototype.getOffset = function () {
+        var offset;
+        if (typeof this.options.offset === 'string') {
+            offset = parseFloat(this.options.offset) * this.windowHeight / 100;
         } else {
-            extended = this.options.extended;
+            offset = this.options.offset;
         }
-        this.extended = -extended;
-        return -extended;
+        this.offset = -offset;
+        return -offset;
     };
     AirLoadImage.prototype.updateWindowHeight = function () {
         this.windowHeight = document.documentElement.clientHeight;
         return this.windowHeight;
     };
     AirLoadImage.prototype.throttle = function (func, ms) {
+        // https://learn.javascript.ru/task/throttle
         var isThrottle = false,
             savedArgs,
             savedThis;
 
         function wrapper() {
-            // (2) В этом состоянии все новые вызовы запоминаются в замыкании через savedArgs/savedThis.
-            // Обратим внимание, что и контекст вызова и аргументы для нас одинаково важны и запоминаются одновременно.
-            // Только зная и то и другое, можно воспроизвести вызов правильно.
             if (isThrottle) {
                 savedArgs = arguments;
                 savedThis = this;
                 return;
             }
-            // (1) Декоратор throttle возвращает функцию-обёртку wrapper,
-            // которая при первом вызове запускает func и переходит в состояние «паузы» (isThrottled = true)
             func.apply(this, arguments);
             isThrottle = true;
             setTimeout(function () {
-                // (3) Далее, когда пройдёт таймаут ms миллисекунд – пауза будет снята,
-                // а wrapper – запущен с последними аргументами и контекстом (если во время паузы были вызовы).
                 isThrottle = false;
                 if (savedArgs) {
                     wrapper.apply(savedThis, savedArgs);
                     savedArgs = savedThis = null;
                 }
-                // Шаг (3) запускает именно не саму функцию, а снова wrapper, так как необходимо не только выполнить func,
-                // но и снова поставить выполнение на паузу. Получается последовательность
-                // «вызов – пауза… вызов – пауза … вызов – пауза …», каждое выполнение в обязательном порядке сопровождается паузой после него.
-                // Это удобно описывается рекурсией.
             }, ms);
         }
         return wrapper;
     };
     AirLoadImage.prototype.init = function () {
         var _this = this;
-        var throttle = this.throttle(this.showVisible, this.options.timeThrottle);
+        var throttle = this.throttle(this.showVisible, this.options.delay);
         function handler(event) {
-            _this.getExtended();
+            _this.getOffset();
             if (event.type === 'resize') {
                 _this.updateWindowHeight();
             }
@@ -74,20 +66,20 @@
         $(document).on('scroll.' + this.options.pluginId, handler);
         $(window).on('resize.' + this.options.pluginId, handler);
 
-        this.getExtended();
+        this.getOffset();
         this.updateWindowHeight();
         this.showVisible();
     };
     AirLoadImage.prototype.checkVisible = function (elem) {
         var coordinates = elem.getBoundingClientRect();
-        var visibleTop = coordinates.top > 0 && coordinates.top + this.extended <= this.windowHeight;
-        var visibleBottom = coordinates.bottom > this.extended && coordinates.bottom <= this.windowHeight;
+        var visibleTop = coordinates.top > 0 && coordinates.top + this.offset <= this.windowHeight;
+        var visibleBottom = coordinates.bottom > this.offset && coordinates.bottom <= this.windowHeight;
         var visibleCenter = coordinates.top < 0 && coordinates.bottom > this.windowHeight;
 
         return visibleTop || visibleBottom || visibleCenter;
     };
     AirLoadImage.prototype.showVisible = function () {
-        var items = $(this.options.items);
+        var items = this.elements;
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             var realSrc = item.getAttribute('data-air-img');
@@ -112,4 +104,11 @@
         $(document).off('scroll.' + this.options.pluginId);
         $(window).off('resize.' + this.options.pluginId);
     };
-})(jQuery);
+
+    $.fn[pluginName] = function (options) {
+        if (!$.data(this, 'plugin_' + pluginName)) {
+            $.data(this, 'plugin_' + pluginName);
+            return new AirLoadImage(this, options).elements;
+        }
+    };
+})(jQuery, window, document);
