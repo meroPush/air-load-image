@@ -1,29 +1,29 @@
 (function ($, window, document) {
     var pluginName = 'airLoadImage',
         defaults = {
-            extended: '75%',
+            offset: '75%',
             delay: 750,
             pluginId: 'airLoadImage'
         };
 
     function AirLoadImage(elements, options) {
         this.elements = elements;
-        this.extended = 0;
+        this.offset = 0;
         this.windowHeight = 0;
         this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
         this.init();
     }
-    AirLoadImage.prototype.getExtended = function () {
-        var extended;
-        if (typeof this.options.extended === 'string') {
-            extended = parseFloat(this.options.extended) * this.windowHeight / 100;
+    AirLoadImage.prototype.getOffset = function () {
+        var offset;
+        if (typeof this.options.offset === 'string') {
+            offset = parseFloat(this.options.offset) * this.windowHeight / 100;
         } else {
-            extended = this.options.extended;
+            offset = this.options.offset;
         }
-        this.extended = -extended;
-        return -extended;
+        this.offset = -offset;
+        return -offset;
     };
     AirLoadImage.prototype.updateWindowHeight = function () {
         this.windowHeight = document.documentElement.clientHeight;
@@ -57,7 +57,7 @@
         var _this = this;
         var throttle = this.throttle(this.showVisible, this.options.delay);
         function handler(event) {
-            _this.getExtended();
+            _this.getOffset();
             if (event.type === 'resize') {
                 _this.updateWindowHeight();
             }
@@ -66,14 +66,14 @@
         $(document).on('scroll.' + this.options.pluginId, handler);
         $(window).on('resize.' + this.options.pluginId, handler);
 
-        this.getExtended();
+        this.getOffset();
         this.updateWindowHeight();
         this.showVisible();
     };
     AirLoadImage.prototype.checkVisible = function (elem) {
         var coordinates = elem.getBoundingClientRect();
-        var visibleTop = coordinates.top > 0 && coordinates.top + this.extended <= this.windowHeight;
-        var visibleBottom = coordinates.bottom > this.extended && coordinates.bottom <= this.windowHeight;
+        var visibleTop = coordinates.top > 0 && coordinates.top + this.offset <= this.windowHeight;
+        var visibleBottom = coordinates.bottom > this.offset && coordinates.bottom <= this.windowHeight;
         var visibleCenter = coordinates.top < 0 && coordinates.bottom > this.windowHeight;
 
         return visibleTop || visibleBottom || visibleCenter;
